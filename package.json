@@ -1,0 +1,21 @@
+{
+  "name": "parknet-backend-root",
+  "version": "1.0.0",
+  "description": "ParkNet Backend - Root package for easy development",
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "dev-clean": "lsof -ti:3001 | xargs kill -9 2>/dev/null || true && pkill -f nodemon 2>/dev/null || true && cd backend && npm run dev",
+    "build": "cd backend && npm run build",
+    "start": "cd backend && npm start",
+    "install-deps": "cd backend && npm install",
+    "clean": "cd backend && npm run clean",
+    "test": "cd backend && npm test",
+    "kill-port": "lsof -ti:3001 | xargs kill -9 2>/dev/null || true"
+  },
+  "keywords": ["parknet", "backend", "api"],
+  "author": "ParkNet Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
