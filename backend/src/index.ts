@@ -31,12 +31,35 @@ const limiter = rateLimit({
 // Middleware
 app.use(helmet()); // Security headers
 app.use(cors({
-  origin: [
-    'http://localhost:8080', 
-    'http://127.0.0.1:8080',
-    'https://parknet-smarter-cities.vercel.app' // Production frontend URL
-  ],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:8080', 
+      'http://127.0.0.1:8080',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'https://parknet-smarter-cities.vercel.app', // Production frontend URL
+      // Add your Vercel deployment URL here
+      'https://parknet-backend.onrender.com' // Your backend URL (if deployed)
+    ];
+    
+    // Allow any subdomain of vercel.app for development
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(limiter); // Rate limiting
 app.use(morgan('combined')); // Logging
@@ -66,8 +89,16 @@ app.use('*', (req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error('Global error handler:', error);
+app.use((error: Error, req: Request, res: Response, _next: NextFunction) => {
+  console.error('Global error handler:', {
+    message: error.message,
+    stack: error.stack,
+    url: req.url,
+    method: req.method,
+    headers: req.headers,
+    body: req.body,
+    timestamp: new Date().toISOString()
+  });
   
   res.status(500).json({
     success: false,

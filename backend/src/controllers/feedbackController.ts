@@ -29,7 +29,34 @@ export const createFeedback = async (req: Request, res: Response): Promise<void>
       message: 'Feedback created successfully'
     });
   } catch (error) {
-    console.error('Error creating feedback:', error);
+    console.error('Error creating feedback:', {
+      error: error,
+      body: req.body,
+      headers: req.headers,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Handle specific MongoDB errors
+    if (error instanceof Error) {
+      if (error.name === 'ValidationError') {
+        res.status(400).json({
+          success: false,
+          message: 'Validation error',
+          error: process.env['NODE_ENV'] === 'development' ? error.message : undefined
+        });
+        return;
+      }
+      
+      if (error.name === 'MongoError' || error.name === 'MongoServerError') {
+        res.status(500).json({
+          success: false,
+          message: 'Database connection error',
+          error: process.env['NODE_ENV'] === 'development' ? error.message : undefined
+        });
+        return;
+      }
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Internal server error',

@@ -4,7 +4,10 @@
 // Copy this code into your Cursor AI frontend project
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:3001';
+// Update this URL based on your deployment
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-backend-deployment-url.vercel.app'  // Replace with your actual backend URL
+  : 'http://localhost:3001';
 
 // ========================================
 // 1. API SERVICE FUNCTIONS
