@@ -31,7 +31,11 @@ const limiter = rateLimit({
 // Middleware
 app.use(helmet()); // Security headers
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
+  origin: [
+    'http://localhost:8080', 
+    'http://127.0.0.1:8080',
+    'https://parknet-smarter-cities.vercel.app' // Production frontend URL
+  ],
   credentials: true
 }));
 app.use(limiter); // Rate limiting
