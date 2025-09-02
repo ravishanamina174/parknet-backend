@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "npm install && tsc",
     "start": "node dist/index.js",
     "clean": "rm -rf dist"
   },
@@ -28,6 +28,7 @@
     "@types/morgan": "^1.9.9",
     "@types/mongoose": "^5.11.97",
     "@types/dotenv": "^8.2.0",
+    "@types/helmet": "^4.0.0",
     "typescript": "^5.3.3",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2"
